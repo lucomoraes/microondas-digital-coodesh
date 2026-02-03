@@ -32,16 +32,26 @@ class AuthManager {
 
     setupUserManagement() {
         this.usersListDiv = document.getElementById('usersList');
-        this.editUserForm = document.getElementById('editUserForm');
-        this.editUserModal = document.getElementById('editUserModal');
-        this.editUserCloseBtn = document.getElementById('editUserCloseBtn');
+        this.editUserForm = document.getElementById('editUserFormSubmit');
+        this.editUserFormDiv = document.getElementById('editUserForm');
+        this.userFormDiv = document.getElementById('userForm');
+        this.toggleUserFormBtn = document.getElementById('toggleUserFormBtn');
+        this.cancelUserFormBtn = document.getElementById('cancelUserFormBtn');
+        this.cancelEditUserBtn = document.getElementById('cancelEditUserBtn');
         this.editUsername = document.getElementById('editUsername');
         this.editPassword = document.getElementById('editPassword');
         this.editUserError = document.getElementById('editUserError');
         this.editUserSuccess = document.getElementById('editUserSuccess');
         this.currentEditUserId = null;
-        if (this.editUserCloseBtn) {
-            this.editUserCloseBtn.addEventListener('click', () => this.hideEditUserModal());
+        
+        if (this.toggleUserFormBtn) {
+            this.toggleUserFormBtn.addEventListener('click', () => this.showUserForm());
+        }
+        if (this.cancelUserFormBtn) {
+            this.cancelUserFormBtn.addEventListener('click', () => this.hideUserForm());
+        }
+        if (this.cancelEditUserBtn) {
+            this.cancelEditUserBtn.addEventListener('click', () => this.hideEditUserForm());
         }
         if (this.editUserForm) {
             this.editUserForm.addEventListener('submit', (e) => this.handleEditUser(e));
@@ -73,7 +83,7 @@ class AuthManager {
                     <h4>${user.username}</h4>
                     <p><strong>ID:</strong> ${user.id}</p>
                 </div>
-                <div>
+                <div style="display: flex; gap: 10px;">
                     <button class="btn btn-small btn-secondary" data-id="${user.id}">Editar</button>
                     <button class="btn btn-small btn-danger" data-id="${user.id}">Excluir</button>
                 </div>
@@ -81,14 +91,35 @@ class AuthManager {
         `).join('');
 
         this.usersListDiv.querySelectorAll('.btn-secondary').forEach(btn => {
-            btn.addEventListener('click', (e) => this.showEditUserModal(e.target.dataset.id));
+            btn.addEventListener('click', (e) => this.showEditUserForm(e.target.dataset.id));
         });
         this.usersListDiv.querySelectorAll('.btn-danger').forEach(btn => {
             btn.addEventListener('click', (e) => this.handleDeleteUser(e.target.dataset.id));
         });
     }
 
-    showEditUserModal(id) {
+    showUserForm() {
+        this.hideEditUserForm();
+        this.userFormDiv.classList.remove('hidden');
+        this.toggleUserFormBtn.textContent = '❌ Cancelar';
+        this.toggleUserFormBtn.onclick = () => this.hideUserForm();
+    }
+
+    hideUserForm() {
+        this.userFormDiv.classList.add('hidden');
+        this.toggleUserFormBtn.textContent = '➕ Criar Novo Usuário';
+        this.toggleUserFormBtn.onclick = () => this.showUserForm();
+        if (this.registerForm) {
+            this.registerForm.reset();
+        }
+        const errorDiv = document.getElementById('registerError');
+        const successDiv = document.getElementById('registerSuccess');
+        if (errorDiv) errorDiv.textContent = '';
+        if (successDiv) successDiv.textContent = '';
+    }
+
+    showEditUserForm(id) {
+        this.hideUserForm();
         this.currentEditUserId = id;
         this.editUserError.textContent = '';
         this.editUserSuccess.textContent = '';
@@ -97,14 +128,22 @@ class AuthManager {
             if (user) {
                 this.editUsername.value = user.username;
                 this.editPassword.value = '';
-                this.editUserModal.classList.remove('hidden');
+                this.editUserFormDiv.classList.remove('hidden');
+                
+                const usersList = document.getElementById('usersList');
+                const userItem = usersList.querySelector(`[data-id="${id}"]`).closest('.program-item');
+                if (userItem && this.editUserFormDiv.parentNode !== userItem.parentNode) {
+                    userItem.after(this.editUserFormDiv);
+                }
             }
         });
     }
 
-    hideEditUserModal() {
-        this.editUserModal.classList.add('hidden');
+    hideEditUserForm() {
+        this.editUserFormDiv.classList.add('hidden');
         this.currentEditUserId = null;
+        this.editUserError.textContent = '';
+        this.editUserSuccess.textContent = '';
     }
 
     async handleEditUser(e) {
@@ -122,7 +161,7 @@ class AuthManager {
             this.editUserSuccess.textContent = 'Usuário atualizado com sucesso!';
             this.loadUsers();
             setTimeout(() => {
-                this.hideEditUserModal();
+                this.hideEditUserForm();
             }, 1200);
         } catch (e) {
             this.editUserError.textContent = e.message || 'Erro ao atualizar usuário.';
@@ -183,7 +222,8 @@ class AuthManager {
             this.loadUsers();
             setTimeout(() => {
                 successDiv.textContent = '';
-            }, 5000);
+                this.hideUserForm();
+            }, 1500);
         } catch (error) {
             errorDiv.textContent = error.message || 'Erro ao registrar usuário.';
         }

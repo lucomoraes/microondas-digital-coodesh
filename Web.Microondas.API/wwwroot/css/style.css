@@ -494,26 +494,6 @@ body {
 
 .users-management h2 {
     color: #333;
-    margin-bottom: 15px;
-}
-
-.info-text {
-    background: #e7f3ff;
-    border-left: 4px solid #2196f3;
-    padding: 12px;
-    margin-bottom: 25px;
-    border-radius: 4px;
-    color: #0d47a1;
-}
-
-.user-form {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 25px;
-}
-
-.user-form h3 {
-    color: #667eea;
     margin-bottom: 20px;
 }
 
@@ -643,43 +623,6 @@ body {
     color: #666;
     font-size: 14px;
     margin: 3px 0;
-}
-
-.edit-user-modal {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-.edit-user-modal .modal-content {
-    background: #fff;
-    border-radius: 10px;
-    padding: 30px;
-    min-width: 320px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-}
-.edit-user-modal .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-.edit-user-modal .modal-header h3 {
-    margin: 0;
-    color: #667eea;
-}
-.edit-user-modal .close {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #888;
-}
-.edit-user-modal .close:hover {
-    color: #dc3545;
 }
 
 @media (max-width: 768px) {

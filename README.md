@@ -156,7 +156,7 @@ WHERE TABLE_TYPE = 'BASE TABLE';
 
 ```bash
 # Na pasta Web.Microondas.API
-dotnet run
+dotnet run --launch-profile https
 
 # Ou para ambiente de desenvolvimento com hot reload
 dotnet watch run
@@ -164,7 +164,6 @@ dotnet watch run
 
 A aplicação estará disponível em:
 - **HTTPS**: `https://localhost:7219`
-- **HTTP**: `http://localhost:5082`
 - **Swagger**: `https://localhost:7219/swagger`
 
 ## 🧪 Como Testar a Aplicação

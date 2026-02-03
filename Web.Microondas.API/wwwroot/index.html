@@ -114,11 +114,11 @@
                         </div>
                         <div class="form-group">
                             <label>Tempo (segundos):</label>
-                            <input type="number" id="customTime" min="1" max="120" required>
+                            <input type="number" id="customTime" min="1" max="120" required pattern="[0-9]+" inputmode="numeric" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                         </div>
                         <div class="form-group">
                             <label>Potência (1-10):</label>
-                            <input type="number" id="customPower" min="1" max="10" required>
+                            <input type="number" id="customPower" min="1" max="10" required pattern="[0-9]+" inputmode="numeric" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                         </div>
                         <div class="form-group">
                             <label>Caractere:</label>
@@ -144,10 +144,10 @@
             <div class="tab-content" id="usersTab">
                 <div class="users-management">
                     <h2>Gerenciar Usuários</h2>
-                    <p class="info-text">⚠️ Apenas usuários autenticados podem registrar novos usuários.</p>
+                    <button id="toggleUserFormBtn" class="btn btn-secondary">➕ Criar Novo Usuário</button>
                     
-                    <div class="user-form">
-                        <h3>Registrar Novo Usuário</h3>
+                    <div id="userForm" class="custom-form hidden">
+                        <h3>Novo Usuário</h3>
                         <form id="registerForm">
                             <div class="form-grid">
                                 <div class="form-group">
@@ -164,41 +164,40 @@
                                 </div>
                             </div>
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-success btn-block">➕ Registrar Usuário</button>
+                                <button type="submit" class="btn btn-success">💾 Salvar</button>
+                                <button type="button" id="cancelUserFormBtn" class="btn btn-secondary">Cancelar</button>
                             </div>
                             <div id="registerError" class="error-message"></div>
                             <div id="registerSuccess" class="success-message"></div>
                         </form>
                     </div>
-                    <h3 style="margin-top:32px;">Usuários Registrados</h3>
+
+                    <!-- Edit User Form (Hidden by default, inserted dynamically below user item) -->
+                    <div id="editUserForm" class="custom-form hidden">
+                        <h3>Editar Usuário</h3>
+                        <form id="editUserFormSubmit">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="editUsername">Usuário:</label>
+                                    <input type="text" id="editUsername" required autocomplete="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editPassword">Nova Senha (deixe em branco para manter):</label>
+                                    <input type="password" id="editPassword" autocomplete="new-password">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-success">💾 Salvar</button>
+                                <button type="button" id="cancelEditUserBtn" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                            <div id="editUserError" class="error-message"></div>
+                            <div id="editUserSuccess" class="success-message"></div>
+                        </form>
+                    </div>
+                    
                     <div id="usersList" class="users-list"></div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Edit User Modal -->
-    <div id="editUserModal" class="edit-user-modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Editar Usuário</h3>
-                <button id="editUserCloseBtn" class="close">&times;</button>
-            </div>
-            <form id="editUserForm">
-                <div class="form-group">
-                    <label for="editUsername">Usuário:</label>
-                    <input type="text" id="editUsername" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label for="editPassword">Nova Senha:</label>
-                    <input type="password" id="editPassword" autocomplete="new-password">
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-success">Salvar</button>
-                </div>
-                <div id="editUserError" class="error-message"></div>
-                <div id="editUserSuccess" class="success-message"></div>
-            </form>
         </div>
     </div>
 
