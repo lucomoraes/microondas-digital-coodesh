@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Web.Microondas.API/Web.Microondas.API.csproj" />
+  <Project Path="Web.Microondas.Application/Web.Microondas.Application.csproj" />
+  <Project Path="Web.Microondas.Domain/Web.Microondas.Domain.csproj" />
+  <Project Path="Web.Microondas.Infrastructure/Web.Microondas.Infrastructure.csproj" />
+</Solution>

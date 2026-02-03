@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<meta charset="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micro-ondas Digital</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <h1>🔐 Autenticação</h1>
+            <div class="auth-status" id="authStatus"></div>
+            
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Usuário:</label>
+                    <input type="text" id="username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+                <div id="loginError" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="mainScreen" class="screen">
+        <div class="container">
+            <div class="header">
+                <h1>Micro-ondas Web</h1>
+                <div class="auth-info">
+                    <span id="userInfo"></span>
+                    <span id="authStatusText" style="margin-left:10px;">Autenticado:</span>
+                    <span id="authStatusIndicator" class="auth-status-indicator grey"></span>
+                    <button id="logoutBtn" class="btn btn-small">Sair</button>
+                </div>
+            </div>
+
+            <div class="main-tabs">
+                <button class="main-tab active" data-tab="microwave">🔥 Micro-ondas</button>
+                <button class="main-tab" data-tab="custom">⚙️ Programas Customizados</button>
+                <button class="main-tab" data-tab="users">👥 Gerenciar Usuários</button>
+            </div>
+
+            <div class="tab-content active" id="microwaveTab">
+                <div class="microwave">
+                    <div class="display">
+                        <div class="display-time" id="displayTime">0:00</div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="input-section">
+                            <div class="form-group">
+                                <label>Potência:</label>
+                                <button id="powerCycleBtn" class="btn btn-secondary">🔥 10</button>
+                            </div>
+                        </div>
+
+                        <div class="keypad">
+                            <button class="key" data-number="1">1</button>
+                            <button class="key" data-number="2">2</button>
+                            <button class="key" data-number="3">3</button>
+                            <button class="key" data-number="4">4</button>
+                            <button class="key" data-number="5">5</button>
+                            <button class="key" data-number="6">6</button>
+                            <button class="key" data-number="7">7</button>
+                            <button class="key" data-number="8">8</button>
+                            <button class="key" data-number="9">9</button>
+                            <button class="key" data-number="0">0</button>
+                            <button class="key key-clear">C</button>
+                        </div>
+
+                        <div class="actions">
+                            <button id="quickStartBtn" class="btn btn-success">⚡ Início Rápido (30s)</button>
+                            <button id="startBtn" class="btn btn-primary">▶️ Iniciar</button>
+                            <button id="pauseCancelBtn" class="btn btn-warning">⏸️ Pausar/Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="programs-section">
+                    <h2>Programas de Aquecimento</h2>
+                    <div class="programs-controls">
+                        <select id="programSelect" class="form-select">
+                            <option value="">Selecione um programa...</option>
+                        </select>
+                        <button id="startProgramBtn" class="btn btn-primary">Iniciar Programa</button>
+                    </div>
+                    <div id="programDetails" class="program-details"></div>
+                </div>
+            </div>
+
+
+            <div class="tab-content" id="customTab">
+                <div class="custom-programs">
+                <h2>Gerenciar Programas Customizados</h2>
+                <button id="toggleCustomFormBtn" class="btn btn-secondary">➕ Criar Novo Programa</button>
+                
+                <div id="customProgramForm" class="custom-form hidden">
+                    <h3>Novo Programa</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nome:</label>
+                            <input type="text" id="customName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Alimento:</label>
+                            <input type="text" id="customFood" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tempo (segundos):</label>
+                            <input type="number" id="customTime" min="1" max="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Potência (1-10):</label>
+                            <input type="number" id="customPower" min="1" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Caractere:</label>
+                            <input type="text" id="customChar" maxlength="1" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Instruções (opcional):</label>
+                            <textarea id="customInstructions" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button id="saveCustomProgramBtn" class="btn btn-success">💾 Salvar</button>
+                        <button id="cancelCustomFormBtn" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </div>
+
+
+
+                <div id="customProgramsList" class="programs-list"></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="usersTab">
+                <div class="users-management">
+                    <h2>Gerenciar Usuários</h2>
+                    <p class="info-text">⚠️ Apenas usuários autenticados podem registrar novos usuários.</p>
+                    
+                    <div class="user-form">
+                        <h3>Registrar Novo Usuário</h3>
+                        <form id="registerForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="regUsername">Usuário:</label>
+                                    <input type="text" id="regUsername" required autocomplete="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="regPassword">Senha:</label>
+                                    <input type="password" id="regPassword" required autocomplete="new-password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="regPasswordConfirm">Confirmar Senha:</label>
+                                    <input type="password" id="regPasswordConfirm" required autocomplete="new-password">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-success btn-block">➕ Registrar Usuário</button>
+                            </div>
+                            <div id="registerError" class="error-message"></div>
+                            <div id="registerSuccess" class="success-message"></div>
+                        </form>
+                    </div>
+                    <h3 style="margin-top:32px;">Usuários Registrados</h3>
+                    <div id="usersList" class="users-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="edit-user-modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Usuário</h3>
+                <button id="editUserCloseBtn" class="close">&times;</button>
+            </div>
+            <form id="editUserForm">
+                <div class="form-group">
+                    <label for="editUsername">Usuário:</label>
+                    <input type="text" id="editUsername" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="editPassword">Nova Senha:</label>
+                    <input type="password" id="editPassword" autocomplete="new-password">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+                <div id="editUserError" class="error-message"></div>
+                <div id="editUserSuccess" class="success-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script charset="utf-8" src="js/toast.js"></script>
+    <script charset="utf-8" src="js/api.js"></script>
+    <script charset="utf-8" src="js/auth.js"></script>
+    <script charset="utf-8" src="js/microwave.js"></script>
+    <script charset="utf-8" src="js/programs.js"></script>
+    <script charset="utf-8" src="js/app.js"></script>
+</body>
+</html>
+
+
+
+
+
