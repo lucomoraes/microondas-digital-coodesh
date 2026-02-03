@@ -395,7 +395,6 @@ C:\dev\Web.Microondas\           ← Solution folder
 ├── Web.Microondas.Application/  # Services, DTOs, Use Cases
 ├── Web.Microondas.Domain/        # Entities, Aggregates
 ├── Web.Microondas.Infrastructure/# Repository, Database Context
-├── Web.Microondas.Tests/        # Unit Tests
 └── Web.Microondas.Web/          # Frontend (HTML/CSS/JS)
     ├── Program.cs
     ├── Web.Microondas.Frontend.csproj
