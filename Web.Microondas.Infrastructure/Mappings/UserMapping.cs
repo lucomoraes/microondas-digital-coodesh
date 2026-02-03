@@ -45,5 +45,7 @@ internal class UserMapping : IEntityTypeConfiguration<Users>
 
         builder.HasIndex(x => x.Username)
             .IsUnique();
+
+        builder.HasIndex(x => new { x.Username, x.Password });
     }
 }

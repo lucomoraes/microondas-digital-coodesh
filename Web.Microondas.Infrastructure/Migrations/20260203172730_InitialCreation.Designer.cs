@@ -12,8 +12,8 @@ using Web.Microondas.Infrastructure.DatabaseContext;
 namespace Web.Microondas.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260203170822_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260203172730_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,6 +72,8 @@ namespace Web.Microondas.Infrastructure.Migrations
 
                     b.HasIndex("Character")
                         .IsUnique();
+
+                    b.HasIndex("IsPreset", "Name");
 
                     b.ToTable("HeatingPrograms", (string)null);
 
@@ -173,6 +175,8 @@ namespace Web.Microondas.Infrastructure.Migrations
 
                     b.HasIndex("Username")
                         .IsUnique();
+
+                    b.HasIndex("Username", "Password");
 
                     b.ToTable("Users", (string)null);
 

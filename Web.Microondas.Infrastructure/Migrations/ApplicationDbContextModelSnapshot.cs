@@ -70,6 +70,8 @@ namespace Web.Microondas.Infrastructure.Migrations
                     b.HasIndex("Character")
                         .IsUnique();
 
+                    b.HasIndex("IsPreset", "Name");
+
                     b.ToTable("HeatingPrograms", (string)null);
 
                     b.HasData(
@@ -170,6 +172,8 @@ namespace Web.Microondas.Infrastructure.Migrations
 
                     b.HasIndex("Username")
                         .IsUnique();
+
+                    b.HasIndex("Username", "Password");
 
                     b.ToTable("Users", (string)null);
 

@@ -53,6 +53,8 @@ public class UserRepository : IUserRepository
 
     public async Task<Users?> GetByUsernameAndPasswordAsync(string username, string passwordHash, CancellationToken ct = default)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == passwordHash, ct);
+        return await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Username == username && u.Password == passwordHash, ct);
     }
 }

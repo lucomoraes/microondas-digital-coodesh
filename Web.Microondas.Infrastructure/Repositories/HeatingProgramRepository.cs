@@ -23,6 +23,7 @@ public class HeatingProgramRepository : IHeatingProgramRepository
     public async Task<IReadOnlyList<HeatingProgram>> GetAllAsync(CancellationToken ct = default)
     {
         return await _context.HeatingPrograms
+            .AsNoTracking()
             .OrderBy(x => x.IsPreset ? 0 : 1)
             .ThenBy(x => x.Name)
             .ToListAsync(ct);

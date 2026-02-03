@@ -142,11 +142,18 @@ class AuthManager {
             const response = await api.login(username, password);
             if (response.token) {
                 this.showAuthSuccess('Login realizado com sucesso!');
-                setTimeout(() => {
+                setTimeout(async () => {
                     this.showMainScreen();
                     this.updateUserInfo(response.username || username);
                     updateAuthStatusIndicator();
                     this.loadUsers();
+                    
+                    if (window.programsManager) {
+                        await programsManager.loadPrograms();
+                    }
+                    if (window.microwaveController) {
+                        await microwaveController.refreshState();
+                    }
                 }, 1000);
             }
         } catch (error) {
@@ -241,6 +248,13 @@ class AuthManager {
         
         if (isAuthenticated) {
             this.showMainScreen();
+            
+            if (window.programsManager) {
+                await programsManager.loadPrograms();
+            }
+            if (window.microwaveController) {
+                await microwaveController.refreshState();
+            }
         } else {
             this.showLoginScreen();
         }

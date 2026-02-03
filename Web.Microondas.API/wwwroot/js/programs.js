@@ -169,10 +169,17 @@ window.ProgramsManager = class ProgramsManager {
         };
 
         try {
-            await api.createCustomProgram(program);
+            const createdProgram = await api.createCustomProgram(program);
             toast.success('Programa customizado criado com sucesso!');
             this.hideCustomForm();
-            await this.loadPrograms();
+            
+            if (createdProgram) {
+                this.programs.push(createdProgram);
+                this.renderProgramsDropdown();
+                this.renderCustomProgramsList();
+            } else {
+                await this.loadPrograms();
+            }
         } catch (error) {
             toast.error(`Erro ao criar programa: ${error.message}`);
         }

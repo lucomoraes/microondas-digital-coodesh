@@ -67,5 +67,7 @@ internal class HeatinProgramMapping : IEntityTypeConfiguration<HeatingProgram>
 
         builder.HasIndex(x => x.Character)
             .IsUnique();
+
+        builder.HasIndex(x => new { x.IsPreset, x.Name });
     }
 }

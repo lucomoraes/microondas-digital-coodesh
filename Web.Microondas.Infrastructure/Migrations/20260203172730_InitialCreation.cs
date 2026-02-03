@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Web.Microondas.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -72,10 +72,20 @@ namespace Web.Microondas.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_HeatingPrograms_is_preset_name",
+                table: "HeatingPrograms",
+                columns: new[] { "is_preset", "name" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_username",
                 table: "Users",
                 column: "username",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_username_password_hash",
+                table: "Users",
+                columns: new[] { "username", "password_hash" });
         }
 
         /// <inheritdoc />

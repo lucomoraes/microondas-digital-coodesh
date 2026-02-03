@@ -41,8 +41,6 @@ function setupTabs() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('?? Initializing Microwave Application...');
-    
     setupTabs();
     
     authManager = new AuthManager();
@@ -50,13 +48,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     programsManager = new ProgramsManager(microwaveController);
     
     await authManager.initialize();
-    
-    if (api.token) {
-        await programsManager.loadPrograms();
-        await microwaveController.refreshState();
-    }
-    
-    console.log('? Application initialized successfully!');
 });
 
 window.addEventListener('unhandledrejection', (event) => {
