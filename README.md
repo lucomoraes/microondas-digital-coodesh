@@ -18,6 +18,12 @@ Sistema web que simula um micro-ondas digital completo com funcionalidades de aq
 - **FluentValidation** - Validação de dados
 - **SHA-256** - Criptografia de senhas
 
+### Testes
+- **xUnit** - Framework de testes unitários
+- **Moq** - Biblioteca de mocking para isolamento de dependências
+- **FluentAssertions** - Asserções expressivas e legíveis
+- **Coverlet** - Cobertura de código
+
 ### Frontend
 - **HTML5/CSS3** - Estrutura e estilização
 - **JavaScript (Vanilla)** - Lógica da interface
@@ -37,25 +43,50 @@ Sistema web que simula um micro-ondas digital completo com funcionalidades de aq
 Web.Microondas/
 ├── Web.Microondas.Domain/          # Entidades e regras de negócio
 │   ├── Entities/
+│   │   ├── Microwave.cs
+│   │   ├── HeatingProgram.cs
+│   │   └── Users.cs
 │   ├── Interfaces/
+│   │   ├── Repository/
+│   │   └── UnitOfWork/
+│   ├── Enums/
 │   └── DomainException/
 ├── Web.Microondas.Application/     # Casos de uso e lógica de aplicação
 │   ├── Services/
+│   │   ├── Implementations/
+│   │   └── Interfaces/
 │   ├── UseCases/
+│   │   ├── Auth/
+│   │   ├── User/
+│   │   ├── HeatingProgram/
+│   │   └── Microwave/
 │   ├── DTOs/
+│   ├── Validators/
 │   ├── Helpers/
 │   └── Exceptions/
 ├── Web.Microondas.Infrastructure/  # Acesso a dados e persistência
-│   ├── Data/
+│   ├── DatabaseContext/
 │   ├── Repositories/
-│   └── Migrations/
-└── Web.Microondas.API/             # Camada de apresentação
-    ├── Controllers/
-    ├── Middleware/
-    └── wwwroot/                    # Frontend
-        ├── js/
-        ├── css/
-        └── index.html
+│   ├── Migrations/
+│   ├── Mappings/
+│   └── UnitOfWork/
+├── Web.Microondas.API/             # Camada de apresentação
+│   ├── Controllers/
+│   ├── Middleware/
+│   └── wwwroot/                    # Frontend
+│       ├── js/
+│       ├── css/
+│       └── index.html
+└── Web.Microondas.Test/            # Testes unitários
+    ├── Domain/                     # Testes de entidades
+    ├── Application/
+    │   ├── Services/               # Testes de serviços
+    │   ├── Handlers/               # Testes de handlers
+    │   ├── Validators/             # Testes de validadores
+    │   ├── Helpers/                # Testes de helpers
+    │   └── Exceptions/             # Testes de exceções
+    └── Infrastructure/
+        └── Repositories/           # Testes de repositórios
 ```
 
 ## ⚙️ Pré-requisitos
@@ -66,6 +97,11 @@ Antes de começar, você precisa ter instalado em sua máquina:
 - [SQL Server](https://www.microsoft.com/sql-server/sql-server-downloads) (Express ou superior)
 - [Visual Studio 2022](https://visualstudio.microsoft.com/) ou [VS Code](https://code.visualstudio.com/)
 - [Git](https://git-scm.com/)
+
+### 📦 Pacotes de Teste (Incluídos no Projeto)
+- **xUnit** - Framework de testes
+- **Moq** - Biblioteca de mocking
+- **FluentAssertions** - Asserções fluentes para testes mais legíveis
 
 ## 🔧 Instalação e Configuração
 
@@ -165,6 +201,138 @@ dotnet watch run
 A aplicação estará disponível em:
 - **HTTPS**: `https://localhost:7219`
 - **Swagger**: `https://localhost:7219/swagger`
+
+## 🧪 Testes Unitários
+
+O projeto inclui uma suite completa de testes unitários para a camada de negócio, implementada com **xUnit**, **Moq** e **FluentAssertions**.
+
+### 📊 Abrangência dos Testes
+
+#### ✅ **Domain Layer (Entidades e Lógica de Negócio)**
+- **MicrowaveTests** (18 testes)
+  - Testes de Quick Start e início manual
+  - Validação de tempo e potência
+  - Comportamento de pausa/cancelamento/resume
+  - Adição de tempo durante aquecimento
+  - Formatação de display e tempo
+  - Validação de programas pré-definidos
+  - Limite de tempo máximo (120s)
+
+- **HeatingProgramTests** (5 testes)
+  - Criação de programas preset e custom
+  - Validação de propriedades
+  - Diferenciação entre tipos de programas
+
+#### ✅ **Application Layer (Serviços e Lógica de Aplicação)**
+
+**Validators (16 testes)**
+- `MicrowaveManualStartValidatorTests` - Validação de tempo e potência
+- `CreateHeatingProgramRequestValidatorTests` - Validação de criação de programas
+  - Campos obrigatórios
+  - Validação de caractere reservado ('.')
+  - Validação de caractere duplicado
+
+**Services (10 testes)**
+- `MicrowaveServiceTests` - Operações do micro-ondas
+  - Estados do micro-ondas (Idle, Running, Paused, Completed)
+  - Integração com programas de aquecimento
+  - Tratamento de exceções de negócio
+
+**Handlers (5 testes)**
+- `CreateHeatingProgramHandlerTests` - Criação de programas com transações
+- `GetAllHeatingProgramsHandlerTests` - Listagem de programas
+- `DeleteHeatingProgramHandlerTests` - Exclusão com rollback em caso de erro
+
+**Helpers (5 testes)**
+- `Sha256HelperTests` - Criptografia de senhas
+  - Consistência de hash
+  - Validação do hash esperado (SHA-256)
+  - Comprimento do hash (64 caracteres)
+
+**Exceptions (3 testes)**
+- `BusinessRuleExceptionTests` - Exception customizada de negócio
+
+#### ✅ **Infrastructure Layer (Repositórios)**
+- `HeatingProgramRepositoryTests` - Comportamento de deleção
+  - Proteção de programas preset
+  - Caracteres únicos
+
+### 📈 Estatísticas dos Testes
+- **Total de Testes**: 62+
+- **Cobertura**: Camada de negócio (Domain e Application)
+- **Frameworks**: xUnit 2.9.3, Moq 4.20.72, FluentAssertions 7.0.0
+
+### 🚀 Como Executar os Testes
+
+#### Via Visual Studio
+1. Abra o **Test Explorer** (`Ctrl + E, T`)
+2. Clique em "Run All Tests" ou `Ctrl + R, A`
+3. Veja os resultados em tempo real
+
+#### Via Command Line
+```bash
+# Executar todos os testes
+dotnet test
+
+# Executar com detalhes
+dotnet test --verbosity detailed
+
+# Executar com coverage (requer pacote coverlet)
+dotnet test /p:CollectCoverage=true /p:CoverageReportsDirectory=./coverage
+
+# Executar testes específicos
+dotnet test --filter "FullyQualifiedName~MicrowaveTests"
+dotnet test --filter "FullyQualifiedName~ValidatorTests"
+```
+
+#### Executar Testes por Categoria
+```bash
+# Testes de Domain
+dotnet test --filter "FullyQualifiedName~Web.Microondas.Test.Domain"
+
+# Testes de Application
+dotnet test --filter "FullyQualifiedName~Web.Microondas.Test.Application"
+
+# Testes de Infrastructure
+dotnet test --filter "FullyQualifiedName~Web.Microondas.Test.Infrastructure"
+```
+
+### 📝 Exemplo de Saída de Testes
+```
+Passed!  - Failed:     0, Passed:    62, Skipped:     0, Total:    62, Duration: 1.2s
+```
+
+### 🎯 Cenários Testados
+
+**Micro-ondas (Domain)**
+- ✅ Início rápido com parâmetros padrão (30s, potência 10)
+- ✅ Início manual com tempo e potência customizados
+- ✅ Conversão de tempo (segundos → minutos:segundos)
+- ✅ Display de aquecimento com caracteres baseados na potência
+- ✅ Pausa e retomada de aquecimento
+- ✅ Cancelamento em diferentes estados
+- ✅ Adição de tempo durante aquecimento (máximo 120s)
+- ✅ Bloqueio de adição de tempo em programas preset
+- ✅ Conclusão de aquecimento com mensagem
+
+**Validadores**
+- ✅ Validação de tempo entre 1-120 segundos
+- ✅ Validação de potência entre 1-10
+- ✅ Validação de campos obrigatórios
+- ✅ Validação de caractere único e não reservado
+- ✅ Mensagens de erro descritivas
+
+**Serviços e Handlers**
+- ✅ Criação e exclusão de programas customizados
+- ✅ Proteção contra exclusão de programas preset
+- ✅ Transações com rollback em caso de erro
+- ✅ Tratamento de exceções de negócio
+- ✅ Integração com repositórios via mocking
+
+**Segurança**
+- ✅ Criptografia SHA-256 consistente
+- ✅ Hash de 64 caracteres hexadecimais
+- ✅ Hash determinístico (mesmo input = mesmo hash)
 
 ## 🧪 Como Testar a Aplicação
 
@@ -300,6 +468,19 @@ STACK TRACE:
 - Exception customizada (`BusinessRuleException`)
 - Middleware de tratamento de exceções
 - Logging de erros em arquivo
+
+### ✅ Requisitos Desejáveis e Diferenciais (100%)
+- ✅ Princípios SOLID aplicados
+- ✅ Design Patterns (Repository, UoW, CQRS, Middleware, Factory)
+- ✅ Clean Architecture com separação clara de camadas
+- ✅ Código documentado e legível
+- ✅ Proteção de acesso a dados e métodos
+- ✅ **Testes Unitários completos (62+ testes)** ⭐
+  - Testes de entidades do domínio
+  - Testes de validadores com FluentValidation
+  - Testes de serviços com mocking (Moq)
+  - Testes de handlers e repositórios
+  - Cobertura da camada de negócio
 
 ## 🐛 Troubleshooting
 

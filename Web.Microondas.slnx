@@ -3,4 +3,5 @@
   <Project Path="Web.Microondas.Application/Web.Microondas.Application.csproj" />
   <Project Path="Web.Microondas.Domain/Web.Microondas.Domain.csproj" />
   <Project Path="Web.Microondas.Infrastructure/Web.Microondas.Infrastructure.csproj" />
+  <Project Path="Web.Microondas.Test/Web.Microondas.Test.csproj" Id="4e9fc367-d875-400d-aa2f-f6c839e299ed" />
 </Solution>
