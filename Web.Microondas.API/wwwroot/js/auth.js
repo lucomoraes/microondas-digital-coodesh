@@ -78,8 +78,8 @@ class AuthManager {
         }
 
         this.usersListDiv.innerHTML = users.map(user => `
-            <div class="program-item">
-                <div class="program-info">
+            <div class="user-item">
+                <div class="user-info">
                     <h4>${user.username}</h4>
                     <p><strong>ID:</strong> ${user.id}</p>
                 </div>
@@ -131,7 +131,7 @@ class AuthManager {
                 this.editUserFormDiv.classList.remove('hidden');
                 
                 const usersList = document.getElementById('usersList');
-                const userItem = usersList.querySelector(`[data-id="${id}"]`).closest('.program-item');
+                const userItem = usersList.querySelector(`[data-id="${id}"]`).closest('.user-item');
                 if (userItem && this.editUserFormDiv.parentNode !== userItem.parentNode) {
                     userItem.after(this.editUserFormDiv);
                 }
