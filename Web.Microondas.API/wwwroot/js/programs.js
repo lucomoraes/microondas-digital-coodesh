@@ -1,33 +1,73 @@
 window.ProgramsManager = class ProgramsManager {
-    constructor(microwaveController) {
-        this.microwave = microwaveController;
-        this.programs = [];
+constructor(microwaveController) {
+    this.microwave = microwaveController;
+    this.programs = [];
+    this.cacheKey = 'microwave_programs_cache';
         
-        this.programSelect = document.getElementById('programSelect');
-        this.programDetails = document.getElementById('programDetails');
-        this.startProgramBtn = document.getElementById('startProgramBtn');
+    this.initializeElements();
+    this.setupEventListeners();
+    this.loadFromCache();
+}
+    
+initializeElements() {
+    this.programSelect = document.getElementById('programSelect');
+    this.programDetails = document.getElementById('programDetails');
+    this.startProgramBtn = document.getElementById('startProgramBtn');
         
-        this.toggleCustomFormBtn = document.getElementById('toggleCustomFormBtn');
-        this.customProgramForm = document.getElementById('customProgramForm');
-        this.saveCustomProgramBtn = document.getElementById('saveCustomProgramBtn');
-        this.cancelCustomFormBtn = document.getElementById('cancelCustomFormBtn');
-        this.customProgramsList = document.getElementById('customProgramsList');
-        
-        this.setupEventListeners();
-    }
+    this.toggleCustomFormBtn = document.getElementById('toggleCustomFormBtn');
+    this.customProgramForm = document.getElementById('customProgramForm');
+    this.saveCustomProgramBtn = document.getElementById('saveCustomProgramBtn');
+    this.cancelCustomFormBtn = document.getElementById('cancelCustomFormBtn');
+    this.customProgramsList = document.getElementById('customProgramsList');
+}
 
     setupEventListeners() {
-        this.programSelect.addEventListener('change', () => this.handleProgramSelection());
-        this.startProgramBtn.addEventListener('click', () => this.handleStartProgram());
-        
-        this.toggleCustomFormBtn.addEventListener('click', () => this.toggleCustomForm());
-        this.saveCustomProgramBtn.addEventListener('click', () => this.handleSaveCustomProgram());
-        this.cancelCustomFormBtn.addEventListener('click', () => this.hideCustomForm());
+        if (this.programSelect) {
+            this.programSelect.addEventListener('change', () => this.handleProgramSelection());
+        }
+        if (this.startProgramBtn) {
+            this.startProgramBtn.addEventListener('click', () => this.handleStartProgram());
+        }
+        if (this.toggleCustomFormBtn) {
+            this.toggleCustomFormBtn.addEventListener('click', () => this.toggleCustomForm());
+        }
+        if (this.saveCustomProgramBtn) {
+            this.saveCustomProgramBtn.addEventListener('click', () => this.handleSaveCustomProgram());
+        }
+        if (this.cancelCustomFormBtn) {
+            this.cancelCustomFormBtn.addEventListener('click', () => this.hideCustomForm());
+        }
     }
 
-    async loadPrograms() {
+    loadFromCache() {
+        try {
+            const cached = localStorage.getItem(this.cacheKey);
+            if (cached) {
+                this.programs = JSON.parse(cached);
+                this.renderProgramsDropdown();
+                this.renderCustomProgramsList();
+            }
+        } catch (error) {
+            console.error('Failed to load from cache:', error);
+        }
+    }
+
+    saveToCache() {
+        try {
+            localStorage.setItem(this.cacheKey, JSON.stringify(this.programs));
+        } catch (error) {
+            console.error('Failed to save to cache:', error);
+        }
+    }
+
+    async loadPrograms(forceRefresh = false) {
+        if (!forceRefresh && this.programs.length > 0) {
+            return;
+        }
+        
         try {
             this.programs = await api.getAllPrograms();
+            this.saveToCache();
             this.renderProgramsDropdown();
             this.renderCustomProgramsList();
         } catch (error) {
@@ -36,6 +76,11 @@ window.ProgramsManager = class ProgramsManager {
     }
 
     renderProgramsDropdown() {
+        if (!this.programSelect) {
+            console.warn('programSelect element not found');
+            return;
+        }
+        
         this.programSelect.innerHTML = '<option value="">Selecione um programa...</option>';
         
         this.programs.forEach(program => {
@@ -54,6 +99,10 @@ window.ProgramsManager = class ProgramsManager {
     }
 
     handleProgramSelection() {
+        if (!this.programSelect || !this.programDetails) {
+            return;
+        }
+        
         const programId = this.programSelect.value;
         
         if (!programId) {
@@ -69,6 +118,10 @@ window.ProgramsManager = class ProgramsManager {
     }
 
     displayProgramDetails(program) {
+        if (!this.programDetails) {
+            return;
+        }
+        
         const minutes = Math.floor(program.timeInSeconds / 60);
         const seconds = program.timeInSeconds % 60;
         const timeStr = minutes > 0 
@@ -91,6 +144,10 @@ window.ProgramsManager = class ProgramsManager {
     }
 
     async handleStartProgram() {
+        if (!this.programSelect) {
+            return;
+        }
+        
         const programId = this.programSelect.value;
         
         if (!programId) {
@@ -114,11 +171,15 @@ window.ProgramsManager = class ProgramsManager {
     }
 
     toggleCustomForm() {
-        this.customProgramForm.classList.toggle('hidden');
+        if (this.customProgramForm) {
+            this.customProgramForm.classList.toggle('hidden');
+        }
     }
 
     hideCustomForm() {
-        this.customProgramForm.classList.add('hidden');
+        if (this.customProgramForm) {
+            this.customProgramForm.classList.add('hidden');
+        }
         this.clearCustomForm();
     }
 
@@ -175,10 +236,11 @@ window.ProgramsManager = class ProgramsManager {
             
             if (createdProgram) {
                 this.programs.push(createdProgram);
+                this.saveToCache();
                 this.renderProgramsDropdown();
                 this.renderCustomProgramsList();
             } else {
-                await this.loadPrograms();
+                await this.loadPrograms(true);
             }
         } catch (error) {
             toast.error(`Erro ao criar programa: ${error.message}`);
@@ -186,6 +248,11 @@ window.ProgramsManager = class ProgramsManager {
     }
 
     renderCustomProgramsList() {
+        if (!this.customProgramsList) {
+            console.warn('customProgramsList element not found');
+            return;
+        }
+        
         const customPrograms = this.programs.filter(p => !p.isPreset);
         
         if (customPrograms.length === 0) {
@@ -212,10 +279,14 @@ window.ProgramsManager = class ProgramsManager {
         
         try {
             await api.deleteCustomProgram(programId);
+            this.programs = this.programs.filter(p => p.id !== programId);
+            this.saveToCache();
+            this.renderProgramsDropdown();
+            this.renderCustomProgramsList();
             toast.success('Programa excluído com sucesso!');
-            await this.loadPrograms();
         } catch (error) {
             toast.error(`Erro ao excluir programa: ${error.message}`);
+            await this.loadPrograms(true);
         }
     }
 }

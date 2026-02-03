@@ -39,7 +39,7 @@ class ApiClient {
             
             if (response.status === 401) {
                 this.clearToken();
-                throw new Error('Não autenticado. Faça login novamente.');
+                throw new Error('Falha de login. Tente novamente.');
             }
 
             if (!response.ok) {

@@ -9,12 +9,12 @@
 class AuthManager {
     constructor() {
         this.loginForm = document.getElementById('loginForm');
-        this.registerForm = null; 
+        this.registerForm = null;
         this.loginError = document.getElementById('loginError');
         this.authStatus = document.getElementById('authStatus');
         this.logoutBtn = document.getElementById('logoutBtn');
         this.userInfo = document.getElementById('userInfo');
-        
+
         this.setupEventListeners();
     }
 
@@ -51,7 +51,7 @@ class AuthManager {
 
     async loadUsers() {
         if (!this.usersListDiv) return;
-        
+
         try {
             const users = await api.getAllUsers();
             this.renderUsersList(users);
@@ -66,7 +66,7 @@ class AuthManager {
             this.usersListDiv.innerHTML = '<p style="color: #666; text-align: center;">Nenhum usuário registrado.</p>';
             return;
         }
-        
+
         this.usersListDiv.innerHTML = users.map(user => `
             <div class="program-item">
                 <div class="program-info">
@@ -79,7 +79,7 @@ class AuthManager {
                 </div>
             </div>
         `).join('');
-        
+
         this.usersListDiv.querySelectorAll('.btn-secondary').forEach(btn => {
             btn.addEventListener('click', (e) => this.showEditUserModal(e.target.dataset.id));
         });
@@ -131,10 +131,10 @@ class AuthManager {
 
     async handleLogin(e) {
         e.preventDefault();
-        
+
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        
+
         this.loginError.textContent = '';
         this.loginError.classList.add('hidden');
 
@@ -142,19 +142,17 @@ class AuthManager {
             const response = await api.login(username, password);
             if (response.token) {
                 this.showAuthSuccess('Login realizado com sucesso!');
-                setTimeout(async () => {
-                    this.showMainScreen();
-                    this.updateUserInfo(response.username || username);
-                    updateAuthStatusIndicator();
-                    this.loadUsers();
-                    
-                    if (window.programsManager) {
-                        await programsManager.loadPrograms();
-                    }
-                    if (window.microwaveController) {
-                        await microwaveController.refreshState();
-                    }
-                }, 1000);
+                this.showMainScreen();
+                this.updateUserInfo(response.username || username);
+                updateAuthStatusIndicator();
+                this.loadUsers();
+
+                if (window.programsManager) {
+                    window.programsManager.loadPrograms(true);
+                }
+                if (window.microwaveController) {
+                    window.microwaveController.refreshState();
+                }
             }
         } catch (error) {
             this.showAuthError(error.message || 'Usuário ou senha inválidos.');
@@ -216,6 +214,7 @@ class AuthManager {
 
     async checkAuthStatus() {
         await updateAuthStatusIndicator();
+        return await api.checkAuthStatus();
     }
 
     updateUserInfo(username) {
@@ -245,15 +244,15 @@ class AuthManager {
 
     async initialize() {
         const isAuthenticated = await this.checkAuthStatus();
-        
+
         if (isAuthenticated) {
             this.showMainScreen();
-            
+
             if (window.programsManager) {
-                await programsManager.loadPrograms();
+                window.programsManager.loadPrograms(true);
             }
             if (window.microwaveController) {
-                await microwaveController.refreshState();
+                window.microwaveController.refreshState();
             }
         } else {
             this.showLoginScreen();
