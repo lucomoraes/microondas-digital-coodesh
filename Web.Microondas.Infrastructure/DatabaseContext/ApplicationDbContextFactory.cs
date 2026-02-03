@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-
-
+using System.Text;
 
 namespace Web.Microondas.Infrastructure.DatabaseContext
 {
@@ -18,9 +17,10 @@ namespace Web.Microondas.Infrastructure.DatabaseContext
 
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-            optionsBuilder.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection")
-            );
+            var base64Conn = configuration.GetConnectionString("DefaultConnection");
+            var decodedConn = Encoding.UTF8.GetString(Convert.FromBase64String(base64Conn));
+
+            optionsBuilder.UseSqlServer(decodedConn);
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

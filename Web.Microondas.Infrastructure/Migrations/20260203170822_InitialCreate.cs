@@ -22,7 +22,7 @@ namespace Web.Microondas.Infrastructure.Migrations
                     food = table.Column<string>(type: "nvarchar(200)", nullable: false),
                     time_in_seconds = table.Column<int>(type: "int", nullable: false),
                     power = table.Column<int>(type: "int", nullable: false),
-                    character = table.Column<string>(type: "char(1)", fixedLength: true, nullable: false),
+                    character = table.Column<string>(type: "nchar(1)", fixedLength: true, nullable: false),
                     instructions = table.Column<string>(type: "nvarchar(500)", nullable: true),
                     is_preset = table.Column<bool>(type: "bit", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -63,7 +63,7 @@ namespace Web.Microondas.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "id", "created_at", "firstname", "lastname", "password_hash", "username" },
-                values: new object[] { new Guid("11111111-1111-1111-1111-111111111111"), new DateTime(2024, 2, 3, 12, 0, 0, 0, DateTimeKind.Utc), "Admin", "User", "d033e22ae348aeb5660fc2140aec35850c4da997", "ADM" });
+                values: new object[] { new Guid("11111111-1111-1111-1111-111111111111"), new DateTime(2024, 2, 3, 12, 0, 0, 0, DateTimeKind.Utc), "Admin", "User", "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", "ADM" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_HeatingPrograms_character",

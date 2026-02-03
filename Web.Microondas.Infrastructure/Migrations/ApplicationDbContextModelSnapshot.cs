@@ -31,7 +31,7 @@ namespace Web.Microondas.Infrastructure.Migrations
 
                     b.Property<string>("Character")
                         .IsRequired()
-                        .HasColumnType("char(1)")
+                        .HasColumnType("nchar(1)")
                         .HasColumnName("character")
                         .IsFixedLength();
 
@@ -180,7 +180,7 @@ namespace Web.Microondas.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 2, 3, 12, 0, 0, 0, DateTimeKind.Utc),
                             Firstname = "Admin",
                             Lastname = "User",
-                            Password = "d033e22ae348aeb5660fc2140aec35850c4da997",
+                            Password = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
                             Username = "ADM"
                         });
                 });
